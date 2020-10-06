@@ -327,7 +327,7 @@ if [ -f "$CS350_ROOT/sys161.conf.old" ]; then
     echo " - If you try to run multiple instances of this script in parallel. (This is not supported)."
     echo " - If you kill the script without giving it a chance to clean up (CTRL-C should work fine)."
     echo "To recover from this, you can either:"
-    echo " - Manually merge \"sys161.conf\" and \"sys161.conf.old\" in the directory \"$CS350_ROOT/sys161.conf.old\" and then delete the backup file."
+    echo " - Manually merge \"sys161.conf\" and \"sys161.conf.old\" in the directory \"$CS350_ROOT/\" and then delete the backup file."
     echo " - Request this script to delete the backup file directly."
     read -rsn 1 -p "Would you like to delete the backup now? This script will exit otherwise. [yYnN] "
     echo
@@ -336,6 +336,7 @@ if [ -f "$CS350_ROOT/sys161.conf.old" ]; then
         if [ -f "$CS350_ROOT/sys161.conf.old" ]; then
             echo "ERROR: Failed to delete the backup file."
             exit 1
+        fi
     else
         exit 1
     fi
