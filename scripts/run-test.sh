@@ -322,9 +322,23 @@ fi
 cd $CS350_ROOT
 
 # Can't run two tests at once, sadly.
-if [ -f ./sys161.conf.old ]; then
-    echo "Sorry, parallel testing isn't supported at the moment."
-    exit 1
+if [ -f "$CS350_ROOT/sys161.conf.old" ]; then
+    echo "WARNING: backup config file detected. This can occur:"
+    echo " - If you try to run multiple instances of this script in parallel. (This is not supported)."
+    echo " - If you kill the script without giving it a chance to clean up (CTRL-C should work fine)."
+    echo "To recover from this, you can either:"
+    echo " - Manually merge \"sys161.conf\" and \"sys161.conf.old\" in the directory \"$CS350_ROOT/sys161.conf.old\" and then delete the backup file."
+    echo " - Request this script to delete the backup file directly."
+    read -rsn 1 -p "Would you like to delete the backup now? This script will exit otherwise. [yYnN] "
+    echo
+    if [[ "$REPLY" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+        rm $CS350_ROOT/sys161.conf.old
+        if [ -f "$CS350_ROOT/sys161.conf.old" ]; then
+            echo "ERROR: Failed to delete the backup file."
+            exit 1
+    else
+        exit 1
+    fi
 fi
 
 valid_cores=$(sed -ne "s/^.*  cpus=//p" ./sys161.conf)
@@ -371,7 +385,7 @@ fi
 
 
 # Make a backup of the configuration file.
-cp ./sys161.conf ./sys161.conf.old
+cp $CS350_ROOT/sys161.conf $CS350_ROOT/sys161.conf.old
 trap "{
     if [ -f $CS350_ROOT/sys161.conf.old ]; then
         cp $CS350_ROOT/sys161.conf.old $CS350_ROOT/sys161.conf;
